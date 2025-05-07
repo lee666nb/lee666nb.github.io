@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人博客</title>
+    <style>
+        body {
+            background: #f7f9fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #222;
+        }
+        .header {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(60,64,67,0.08);
+            padding: 32px 0 16px 0;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #4285f4;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            padding: 40px 10vw 40px 10vw;
+        }
+        .works, .comments {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(60,64,67,0.08);
+            padding: 32px 24px;
+            min-width: 320px;
+            max-width: 480px;
+            flex: 1 1 380px;
+        }
+        .works h2, .comments h2 {
+            color: #4285f4;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+        .works-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+        .works-gallery img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(60,64,67,0.10);
+            background: #eee;
+            transition: transform 0.2s;
+        }
+        .works-gallery img:hover {
+            transform: scale(1.08);
+        }
+        .comments-list {
+            max-height: 260px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+        .comment {
+            background: #f1f3f4;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: commentIn 0.5s forwards;
+        }
+        @keyframes commentIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .comment-user {
+            font-weight: bold;
+            color: #4285f4;
+            margin-right: 8px;
+        }
+        .comment-form {
+            display: flex;
+            gap: 8px;
+        }
+        .comment-form input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .comment-form button {
+            background: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .comment-form button:hover {
+            background: #3367d6;
+        }
+        @media (max-width: 900px) {
+            .main {
+                flex-direction: column;
+                gap: 24px;
+                padding: 24px 2vw;
+            }
+        }
+        .img-preview-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .img-preview-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .img-preview {
+            max-width: 80vw;
+            max-height: 80vh;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            background: #fff;
+            animation: scaleIn 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+            transition: opacity 0.3s, transform 0.3s;
+            opacity: 1;
+        }
+        .img-preview.anim-left {
+            animation: imgSlideLeft 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+        .img-preview.anim-right {
+            animation: imgSlideRight 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+        @keyframes scaleIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes imgSlideLeft {
+            0% { opacity: 0; transform: translateX(-80px) scale(0.95); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes imgSlideRight {
+            0% { opacity: 0; transform: translateX(80px) scale(0.95); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        .img-preview-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            color: #fff;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            line-height: 48px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 10000;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .img-preview-arrow.left { left: 5vw; }
+        .img-preview-arrow.right { right: 5vw; }
+        .img-preview-arrow:hover { background: rgba(66,133,244,0.7); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>李熠的个人博客</h1>
+    </div>
+    <div class="main">
+        <section class="works">
+            <h2>我的作品展示</h2>
+            <div class="works-gallery">
+                <img src="../李熠のpixiv时刻/新春贺图1.jpeg" alt="新春贺图1" class="previewable">
+                <img src="../李熠のpixiv时刻/新春贺图2.jpeg" alt="新春贺图2" class="previewable">
+                <img src="../李熠のpixiv时刻/新春贺图3.jpeg" alt="新春贺图3" class="previewable">
+                <img src="../李熠のpixiv时刻/新春贺图4.jpeg" alt="新春贺图4" class="previewable">
+                <img src="../李熠のpixiv时刻/新春贺图5.jpeg" alt="新春贺图5" class="previewable">
+            </div>
+        </section>
+        <section class="comments">
+            <h2>留言区</h2>
+            <div class="comments-list" id="comments-list">
+                <div class="comment"><span class="comment-user">小明:</span>作品好棒！</div>
+                <div class="comment"><span class="comment-user">Alice:</span>很喜欢你的画风！</div>
+            </div>
+            <form class="comment-form" id="comment-form" autocomplete="off">
+                <input type="text" id="user" placeholder="昵称" required>
+                <input type="text" id="msg" placeholder="留言内容" required>
+                <button type="submit">留言</button>
+            </form>
+        </section>
+    </div>
+    <div class="img-preview-overlay" id="imgPreviewOverlay">
+        <span class="img-preview-arrow left" id="imgPreviewPrev">&lt;</span>
+        <img class="img-preview" id="imgPreview" src="" alt="预览">
+        <span class="img-preview-arrow right" id="imgPreviewNext">&gt;</span>
+    </div>
+    <script>
+        // 简单前端留言功能
+        const form = document.getElementById('comment-form');
+        const list = document.getElementById('comments-list');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('user').value.trim();
+            const msg = document.getElementById('msg').value.trim();
+            if(user && msg) {
+                const div = document.createElement('div');
+                div.className = 'comment';
+                div.innerHTML = `<span class='comment-user'>${user}:</span>${msg}`;
+                list.appendChild(div);
+                // 强制触发动画
+                void div.offsetWidth;
+                div.style.animation = 'commentIn 0.5s forwards';
+                form.reset();
+                list.scrollTop = list.scrollHeight;
+            }
+        });
+
+        // 作品集图片点击放大预览（带切换）
+        const previewImgs = Array.from(document.querySelectorAll('.works-gallery .previewable'));
+        const overlay = document.getElementById('imgPreviewOverlay');
+        const preview = document.getElementById('imgPreview');
+        const prevBtn = document.getElementById('imgPreviewPrev');
+        const nextBtn = document.getElementById('imgPreviewNext');
+        let currentIndex = 0;
+        let lastAnim = '';
+        function showPreview(idx, direction) {
+            currentIndex = idx;
+            // 动画切换
+            preview.classList.remove('anim-left', 'anim-right');
+            if(direction === 'left') {
+                preview.classList.add('anim-left');
+            } else if(direction === 'right') {
+                preview.classList.add('anim-right');
+            } else {
+                preview.style.animation = '';
+            }
+            preview.src = previewImgs[idx].src;
+            overlay.classList.add('active');
+        }
+        previewImgs.forEach((img, idx) => {
+            img.addEventListener('click', () => {
+                showPreview(idx);
+            });
+        });
+        overlay.addEventListener('click', (e) => {
+            if(e.target === overlay) overlay.classList.remove('active');
+        });
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPreview((currentIndex - 1 + previewImgs.length) % previewImgs.length, 'left');
+        });
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPreview((currentIndex + 1) % previewImgs.length, 'right');
+        });
+        // 键盘左右键支持
+        document.addEventListener('keydown', function(e) {
+            if(!overlay.classList.contains('active')) return;
+            if(e.key === 'ArrowLeft') prevBtn.click();
+            if(e.key === 'ArrowRight') nextBtn.click();
+            if(e.key === 'Escape') overlay.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

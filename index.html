@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            background: url('../李熠のpixiv时刻/新春贺图1.jpeg') no-repeat center center/cover;
+            filter: none !important;
+            transition: filter 0.3s;
+        }
+        body.bg-blur::before {
+            filter: none !important;
+        }
+        .login-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            filter: blur(3px); /* 降低模糊程度 */
+            transition: filter 0.3s;
+        }
+        .login-container:hover {
+            filter: none;
+        }
+        .login-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-container button:hover {
+            background-color: #357ae8;
+        }
+        .login-container p {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .login-container a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Sign in</h1>
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <button id="loginBtn">Login</button>
+        <p>Don't have an account? <a href="register.html">Create account</a></p>
+    </div>
+    <script>
+        // 鼠标悬停和输入框focus时解除模糊
+        function setLoginBlur(clear) {
+            if(clear) {
+                document.querySelector('.login-container').style.filter = 'none';
+            } else {
+                document.querySelector('.login-container').style.filter = 'blur(3px)';
+            }
+        }
+        const login = document.querySelector('.login-container');
+        login.addEventListener('mouseenter', function() { setLoginBlur(true); });
+        login.addEventListener('mouseleave', function() {
+            // 只有没有focus时才恢复模糊
+            if(!document.querySelector('.login-container input:focus')) setLoginBlur(false);
+        });
+        login.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() { setLoginBlur(true); });
+            input.addEventListener('blur', function() {
+                // 检查是否还有其他input focus
+                setTimeout(() => {
+                    if(!login.querySelector('input:focus')) setLoginBlur(false);
+                }, 0);
+            });
+        });
+        // 登录校验
+        document.getElementById('loginBtn').onclick = function() {
+            const email = document.querySelector('input[type="email"]').value.trim();
+            const pwd = document.querySelector('input[type="password"]').value.trim();
+            if(email === 'admin' && pwd === '123') {
+                window.location.href = 'blog.html';
+            } else {
+                alert('账号或密码错误！\n账号：admin\n密码：123');
+            }
+        };
+    </script>
+</body>
+</html>

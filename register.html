@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            background: url('../李熠のpixiv时刻/新春贺图1.jpeg') no-repeat center center/cover;
+            filter: none !important;
+            transition: filter 0.3s;
+        }
+        body.bg-blur::before {
+            filter: none !important;
+        }
+        .register-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            filter: blur(3px);
+            transition: filter 0.3s;
+        }
+        .register-container:hover {
+            filter: none;
+        }
+        .register-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .register-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .register-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .register-container button:hover {
+            background-color: #4285f4;
+        }
+        .register-container p {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .register-container a {
+            color: #42a1f4;
+            text-decoration: none;
+        }
+        .register-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1>Create Account</h1>
+        <input type="text" placeholder="Username" required>
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <input type="password" placeholder="Confirm Password" required>
+        <button>Register</button>
+        <p>Already have an account? <a href="html.html">Sign in</a></p>
+    </div>
+    <script>
+        // 鼠标悬停和输入框focus时解除模糊
+        function setRegisterBlur(clear) {
+            if(clear) {
+                document.querySelector('.register-container').style.filter = 'none';
+            } else {
+                document.querySelector('.register-container').style.filter = 'blur(3px)';
+            }
+        }
+        const register = document.querySelector('.register-container');
+        register.addEventListener('mouseenter', function() { setRegisterBlur(true); });
+        register.addEventListener('mouseleave', function() {
+            if(!document.querySelector('.register-container input:focus')) setRegisterBlur(false);
+        });
+        register.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() { setRegisterBlur(true); });
+            input.addEventListener('blur', function() {
+                setTimeout(() => {
+                    if(!register.querySelector('input:focus')) setRegisterBlur(false);
+                }, 0);
+            });
+        });
+    </script>
+</body>
+</html>
